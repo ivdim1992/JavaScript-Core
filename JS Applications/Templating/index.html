@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello Handlebars</title>
+    <script src="./node_modules/handlebars/dist/handlebars.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script id="contact-template" type="text/x-handlebars-template">
+    <article>
+        <div class="title">{{firstName}} {{lastName}}<button>&#8505;</button></div>
+        <div class="info">
+            <span>&phone; {{phone}}</span>
+            <span>&#9993; {{email}}</span>
+        </div>
+    </article>
+</script>
+<script id="whether-template" type="text/x-handlebars-template">
+    {{#if sunny}}
+    The sky is clear
+    {{else}}
+    The sky is overcast
+    {{/if}}
+</script>
+<script>
+    let container = document.getElementById('app');
+
+
+
+    let source = document.getElementById('whether-template').innerHTML;
+    let template = Handlebars.compile(source)
+
+    container.innerHTML += template({sunny:false})
+
+    // let contacts = [
+    //     {firstName: 'Pesho', lastName:'Ivanov',email:'adad@abv.bg',phone:'012041023'},
+    //     {firstName: 'Ivanka', lastName:'Ivanova',email:'ivanka@abv.bg',phone:'088128381'}
+    // ];
+    //
+    //
+    // let source = document.getElementById('contact-template').innerHTML;
+    // let template = Handlebars.compile(source);
+    //
+    //
+    // for(let contact of contacts){
+    //     container.innerHTML += template(contact);
+    // }
+
+</script>
+</body>
+</html>
+
+
+

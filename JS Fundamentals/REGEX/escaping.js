@@ -1,0 +1,4 @@
+function htmlEscape(input) {
+    
+}
+htmlEscape()
