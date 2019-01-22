@@ -3,15 +3,15 @@ function juice(strArr) {
     let juice = new Map();
 
     for (let row of strArr) {
-        let [juiceName, quantity] = row.split(' => ');
+        let [juiceName, quantity] = row.split(" => ");
         quantity = Number(quantity);
 
         if (!juice.hasOwnProperty(juiceName)) {
-            juice[juiceName] = quantity
+            juice[juiceName] = quantity;
         }else {
-            juice[juiceName] += quantity
+            juice[juiceName] += quantity;
         }
-        quantity = juice[juiceName]
+        quantity = juice[juiceName];
 
         if (quantity >= 1000) {
             let currentBottles = Math.floor(quantity / 1000);
@@ -19,14 +19,14 @@ function juice(strArr) {
         }
     }
     for (let juiceName in bottles) {
-        console.log(`${juiceName} => ${bottles[juiceName]}`)
+        console.log(`${juiceName} => ${bottles[juiceName]}`);
     }
 }
 
 juice([
-    'Orange => 2000',
-    'Peach => 1432',
-    'Banana => 450',
-    'Peach => 600',
-    'Strawberry => 549'
+    "Orange => 2000",
+    "Peach => 1432",
+    "Banana => 450",
+    "Peach => 600",
+    "Strawberry => 549"
 ]);

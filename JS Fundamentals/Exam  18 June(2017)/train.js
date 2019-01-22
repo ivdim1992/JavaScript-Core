@@ -1,57 +1,106 @@
-function solve(strArr) {
-    let resultMap = new Map();
+function calculateTotalBooksPrice(orderedBooks) {
 
-    for (let row of strArr) {
-        let [systemName, componentName, subComponentName] = row.split(/\s\|\s/);
+    let totalFantasyPrice = 0;
+    let totalMysteryPrice = 0;
+    let totalChildrenPrice = 0;
+    let totalBooksPrice = 0;
 
-        if (!resultMap.has(systemName)) {
-            resultMap.set(systemName, new Map())
+    let fantasyCounter = 0;
+    let mysteryCounter = 0;
+    let childrenCounter = 0;
+    let otherGenresCounter = 0;
+
+    let month;
+
+    for (let order = 0; order < orderedBooks.length; order++) {
+        let orderInfo = orderedBooks[order].split(' - ');
+        if (order === 0) {
+            month = orderInfo[0];
+            continue;
         }
-        if (!resultMap.get(systemName).has(componentName)) {
-            resultMap.get(systemName).set(componentName, [])
+        if (orderInfo[1] === undefined) {
+            continue;
         }
-        resultMap.get(systemName).get(componentName).push(subComponentName)
+        let bookName = orderInfo[0];
+        let bookGenre;
+        let bookPrice;
+        if (!isNaN(orderInfo[1])) {
+            bookPrice = Number(orderInfo[1]);
+            otherGenresCounter++;
+        } else {
+            bookGenre = orderInfo[1];
+            bookPrice = Number(orderInfo[2]);
+            if (bookGenre === 'Mystery') {
+                mysteryCounter++;
+            } else if (bookGenre === 'Fantasy') {
+                fantasyCounter++;
+            } else if (bookGenre === 'Children') {
+                childrenCounter++;
+            } else {
+                otherGenresCounter++;
+            }
+        }
+        switch (month) {
+            case 'January':
+                if (bookGenre === 'Fantasy') {
+                    totalFantasyPrice += bookPrice - bookPrice * 0.3;
+                } else {
+                    totalBooksPrice += bookPrice;
+                }
+                break;
+            case 'February':
+                if (bookGenre === 'Fantasy') {
+                    totalFantasyPrice += bookPrice - bookPrice * 0.3;
+                }
+                if (bookGenre === 'Children') {
+                    totalChildrenPrice += bookPrice - bookPrice * 0.2;
+                } else {
+                    totalBooksPrice += bookPrice;
+                }
+                break;
+            case 'March':
+                if (bookGenre === 'Children') {
+                    totalChildrenPrice += bookPrice - bookPrice * 0.2;
+                } else {
+                    totalBooksPrice += bookPrice;
+                }
+                break;
+            case 'November':
+                if (bookGenre === 'Mystery') {
+                    bookPrice = bookPrice + bookPrice * 0.2;
+                    if (mysteryCounter % 2 === 0) {
+                        totalMysteryPrice += bookPrice - (bookPrice * 2.2) / 100;
+                    }
+                } else {
+                    totalBooksPrice += bookPrice;
+                }
+                break;
+            default: totalBooksPrice+=bookPrice;
+        }
+        //calculate total cost
+        if (order === orderedBooks.length) {
+            if (month === 'February' || month === 'March') {
+                totalFantasyPrice -= totalFantasyPrice * 0.3;
+            }
+            if (fantasyCounter > 5) {
+                totalFantasyPrice -= totalFantasyPrice * 0.1;
+            }
+            if (mysteryCounter > 5) {
+                totalMysteryPrice -= totalMysteryPrice * 0.1;
+            }
+            if (childrenCounter > 5) {
+                totalChildrenPrice -= totalChildrenPrice * 0.1;
+            }
+
+            totalBooksPrice = totalChildrenPrice + totalMysteryPrice + totalFantasyPrice;
+
+            if (childrenCounter + fantasyCounter + mysteryCounter + otherGenresCounter >= 10) {
+                totalBooksPrice -= totalBooksPrice * 0.2;
+            }
+        }
 
     }
-
-    let sortedSystems = [...resultMap.keys()].sort(sortSystems);
-
-    for(let system of sortedSystems){
-       console.log(system);
-       let sortedValues = [...resultMap.get(system).keys()].sort((comp1,comp2) => {
-           sortedComponents(system,comp1,comp2)
-       });
-        for(let compName of sortedValues){
-            console.log(`|||${compName}`);
-            resultMap.get(system).get(compName).forEach(el => console.log(`||||||${el}`))
-        }
-    }
-   // console.log(resultMap)
-
-     function sortedComponents(sys,comp1,comp2) {
-         return resultMap.get(sys).get(comp2).length - resultMap.get(sys).get(comp1).length
-     }
-    function sortSystems(sys1,sys2) {
-        if(resultMap.get(sys1).size !== resultMap.get(sys2).size){
-            return resultMap.get(sys2).size - resultMap.get(sys1).size;
-        }else {
-          return  sys1.toLowerCase().localeCompare(sys2.toLowerCase())
-        }
-    }
+    let totalBooks = childrenCounter+fantasyCounter+mysteryCounter+otherGenresCounter;
+    totalBooksPrice+=totalFantasyPrice+totalMysteryPrice+totalChildrenPrice;
+    console.log(`Mariyka owe ${totalBooksPrice.toFixed(2)} money for ${totalBooks} books.`);
 }
-
-solve([
-    'SULS | Main Site | Home Page',
-    'SULS | Main Site | Login Page',
-    'SULS | Main Site | Register Page',
-    'SULS | Judge Site | Login Page',
-    'SULS | Judge Site | Submittion Page',
-    'Lambda | CoreA | A23',
-    'SULS | Digital Site | Login Page',
-    'Lambda | CoreB | B24',
-    'Lambda | CoreA | A24',
-    'Lambda | CoreA | A25',
-    'Lambda | CoreC | C4',
-    'Indice | Session | Default Storage',
-    'Indice | Session | Default Security'
-]);
